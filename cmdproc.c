@@ -19,7 +19,7 @@ usage(char *nm)
 {
   char  *iam;
   iam = basename(nm);
-  printf("%s rate <transRate> dtsz <dataSize> rsock <IP4addr>:<port> [seqchk]\n", iam);
+  printf("%s rsock <IP4addr>:<port> [seqchk]\n", iam);
 }
 
 void
@@ -29,17 +29,7 @@ cmdproc(int ac, char *av[])
 
   for  (ix=1; ix<ac; ix++)
   {
-    if (!strcmp(av[ix], "rate"))
-    {
-      ix++;
-      transinfo.trnsrate = atoi(av[ix]);
-    }
-    else if (!strcmp(av[ix], "dtsz"))
-    {
-      ix++;
-      transinfo.trnsdtsz = atoi(av[ix]);
-    }
-    else if (!strcmp(av[ix], "seqchk"))
+    if (!strcmp(av[ix], "seqchk"))
     {
       seqchkf = 1;
     }
@@ -66,12 +56,8 @@ cmdproc(int ac, char *av[])
     }
   }
 
-  if (!transinfo.trnsrate ||
-      !transinfo.trnsdtsz ||
-      !rcvinfo.src_addr.sin_port)
+  if (!rcvinfo.src_addr.sin_port)
   {
-    if (!transinfo.trnsrate){fprintf(stderr, "rate ");}
-    if (!transinfo.trnsdtsz){fprintf(stderr, "dtsz ");}
     if (!rcvinfo.src_addr.sin_port){fprintf(stderr, "rsock ");}
     fprintf(stderr, "の指定をしてください\n");
     usage(av[0]);

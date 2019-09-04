@@ -23,12 +23,6 @@
 #define UDP_HDRS  8
 #define RTP_HDRS  12
 
-typedef struct trans_info {
-  long  trnsrate;
-  int   trnsdtsz;
-  struct timeval  alwble_trnstime;
-} TRNSINFO;
-
 #define TRNS_HDRS (MAC_HDRS+IPV4_HDRS+UDP_HDRS+RTP_HDRS)
 #define CALC_PACK_INTVL_USEC(r, d) (1000000/((r/8)/(TRNS_HDRS+d)))
 
