@@ -29,6 +29,8 @@ recv_proc(void)
   timersub(&rcvinfo.rcv_time, &pre_rcv_tm, &tmptm);
   if (timercmp(&unit_tm, &tmptm, <=))
   {
+    timersub(&rcvinfo.rcv_time, &proc_strttm, &tmptm);
+
     intrvl_ttl_usec /= intrvl_cnt;
     intrvl_cnt = 0;
     intrvltm.tv_sec = intrvl_ttl_usec / 1000000;
@@ -37,7 +39,7 @@ recv_proc(void)
     unit_ttlrcvs *= 8;
     mrate = unit_ttlrcvs / 1000000;
     krate = (unit_ttlrcvs % 1000000) / 1000;
-    printf("Rcv %d.%d Mbps %ld,%06ld\n", mrate, krate, intrvltm.tv_sec, intrvltm.tv_usec);
+    printf("%ld.%06ld:Rcv %d.%d Mbps %ld,%06ld %d/%d\n", tmptm.tv_sec, tmptm.tv_usec, mrate, krate, intrvltm.tv_sec, intrvltm.tv_usec, sqchers, sqchks);
     unit_ttlrcvs = 0;
     pre_rcv_tm = rcvinfo.rcv_time;
 
@@ -53,18 +55,19 @@ recv_proc(void)
 
     sqno = (rcvinfo.rcv_data[2] << 8)|rcvinfo.rcv_data[3];
 
+    sqchks++;
     if ((pre_rcv_data_sqno+1) != sqno)
     {
       if (1 < sqchks)
       {
         if (!(((unsigned short int)pre_rcv_data_sqno == 65535) && ((unsigned short int)sqno == 0)))
         {
-          printf("RD SQER %d -> %d %ld.%06ld\n", pre_rcv_data_sqno, sqno, intrvltm.tv_sec, intrvltm.tv_usec);
+          timersub(&rcvinfo.rcv_time, &proc_strttm, &tmptm);
           sqchers++;
+          printf("%ld.%06ld:RD SQER %d/%d %d -> %d %ld.%06ld\n", tmptm.tv_sec, tmptm.tv_usec, sqchers, sqchks, pre_rcv_data_sqno, sqno, intrvltm.tv_sec, intrvltm.tv_usec);
         }
       }
     }
     pre_rcv_data_sqno =  sqno;
-    sqchks++;
   }
 }
