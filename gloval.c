@@ -3,3 +3,4 @@
 
 int seqchkf = 0;
 RCVINFO rcvinfo;
+struct timeval  proc_strttm;
