@@ -63,9 +63,34 @@ recv_proc(void)
       {
         if (!(((unsigned short int)pre_rcv_data_sqno == 65535) && ((unsigned short int)sqno == 0)))
         {
+          char  cnmzros[32],errrtstr[64];
+          int   errrt, errcnt, dx;
           timersub(&rcvinfo.rcv_time, &proc_strttm, &tmptm);
           sqchers++;
-          printf("\n%ld.%06ld:RD SQER %d/%d %d -> %d %ld.%06ld\n", tmptm.tv_sec, tmptm.tv_usec, sqchers, sqchks, pre_rcv_data_sqno, sqno, intrvltm.tv_sec, intrvltm.tv_usec);
+
+          dx = 0;
+          errcnt = sqchers * 100;
+          errrt = errcnt / sqchks;
+          if (errrt)
+          {
+            sprintf(errrtstr, "%d%%", errrt);
+          }
+          else
+          {
+            cnmzros[dx++] = '0';
+            cnmzros[dx] = '\0';
+            errcnt *= 10;
+            errrt = errcnt / sqchks;
+            while (!errrt)
+            {
+              cnmzros[dx++] = '0';
+              cnmzros[dx] = '\0';
+              errcnt *= 10;
+              errrt = errcnt / sqchks;
+            }
+            sprintf(errrtstr, "0.%s%d%%", cnmzros, errrt);
+          }
+          printf("\n%ld.%06ld:RD SQER %d -> %d %ld.%06ld %d/%d %s\n", tmptm.tv_sec, tmptm.tv_usec, pre_rcv_data_sqno, sqno, intrvltm.tv_sec, intrvltm.tv_usec, sqchers, sqchks, errrtstr);
         }
       }
     }
