@@ -39,7 +39,8 @@ recv_proc(void)
     unit_ttlrcvs *= 8;
     mrate = unit_ttlrcvs / 1000000;
     krate = (unit_ttlrcvs % 1000000) / 1000;
-    printf("%ld.%06ld:Rcv %d.%d Mbps %ld,%06ld %d/%d\n", tmptm.tv_sec, tmptm.tv_usec, mrate, krate, intrvltm.tv_sec, intrvltm.tv_usec, sqchers, sqchks);
+    printf("\r%s\r%ld.%06ld:Rcv %d.%d Mbps %ld,%06ld %d/%d", spsln, tmptm.tv_sec, tmptm.tv_usec, mrate, krate, intrvltm.tv_sec, intrvltm.tv_usec, sqchers, sqchks);
+    fflush(stdout);
     unit_ttlrcvs = 0;
     pre_rcv_tm = rcvinfo.rcv_time;
 
@@ -64,7 +65,7 @@ recv_proc(void)
         {
           timersub(&rcvinfo.rcv_time, &proc_strttm, &tmptm);
           sqchers++;
-          printf("%ld.%06ld:RD SQER %d/%d %d -> %d %ld.%06ld\n", tmptm.tv_sec, tmptm.tv_usec, sqchers, sqchks, pre_rcv_data_sqno, sqno, intrvltm.tv_sec, intrvltm.tv_usec);
+          printf("\n%ld.%06ld:RD SQER %d/%d %d -> %d %ld.%06ld\n", tmptm.tv_sec, tmptm.tv_usec, sqchers, sqchks, pre_rcv_data_sqno, sqno, intrvltm.tv_sec, intrvltm.tv_usec);
         }
       }
     }
