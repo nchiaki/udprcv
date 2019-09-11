@@ -18,6 +18,8 @@
 * パケット受信時刻
 * 転送先情報（宛先アドレス、宛先ポート番号）(N件、保存情報)
 **/
+#define MTU_SIZE  1500
+
 #define MAC_HDRS  14
 #define IPV4_HDRS 20
 #define UDP_HDRS  8
@@ -26,7 +28,9 @@
 #define TRNS_HDRS (MAC_HDRS+IPV4_HDRS+UDP_HDRS+RTP_HDRS)
 #define CALC_PACK_INTVL_USEC(r, d) (1000000/((r/8)/(TRNS_HDRS+d)))
 
-#define RCVDTARAZ 1500
+#define PCKDAT_MAXZ (MTU_SIZE-(MAC_HDRS+IPV4_HDRS+UDP_HDRS))
+
+#define RCVDTARAZ 9000
 typedef struct recv_info {
   int             sock;
   struct sockaddr_in src_addr;

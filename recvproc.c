@@ -27,6 +27,13 @@ recv_proc(void)
   gettimeofday(&rcvinfo.rcv_time, NULL);
   timersub(&rcvinfo.rcv_time, &lst1_rcv_tm, &intrvltm);
   timersub(&rcvinfo.rcv_time, &pre_rcv_tm, &tmptm);
+
+  if (PCKDAT_MAXZ < rcvinfo.rcv_actlen)
+  {
+    fprintf(stderr, "\r%s\r%ld.%06ld:Rcv BigData Rcv %d\n", spsln, tmptm.tv_sec, tmptm.tv_usec, rcvinfo.rcv_actlen);
+    return;
+  }
+
   if (timercmp(&unit_tm, &tmptm, <=))
   {
     timersub(&rcvinfo.rcv_time, &proc_strttm, &tmptm);
