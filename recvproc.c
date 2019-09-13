@@ -1,6 +1,12 @@
 #include  <stdio.h>
+#include <unistd.h>
+#include  <string.h>
+#include <stdlib.h>
+#include  <errno.h>
+
 #include  "procdef.h"
 #include  "glovaldef.h"
+#include  "funcdef.h"
 
 unsigned short int  pre_rcv_data_sqno;
 int   sqchks = 0;
@@ -71,7 +77,7 @@ recv_proc(void)
         if (!(((unsigned short int)pre_rcv_data_sqno == 65535) && ((unsigned short int)sqno == 0)))
         {
           char  cnmzros[32],errrtstr[64];
-          int   errrt, errcnt, dx;
+          int   errrt, errcnt, dx, rtn;
           timersub(&rcvinfo.rcv_time, &proc_strttm, &tmptm);
           sqchers++;
 
@@ -98,6 +104,16 @@ recv_proc(void)
             sprintf(errrtstr, "0.%s%d%%", cnmzros, errrt);
           }
           printf("\n%ld.%06ld:RD SQER %d -> %d %ld.%06ld %d/%d %s\n", tmptm.tv_sec, tmptm.tv_usec, pre_rcv_data_sqno, sqno, intrvltm.tv_sec, intrvltm.tv_usec, sqchers, sqchks, errrtstr);
+
+          // ソケットの再生性
+          rtn = close(rcvinfo.sock);
+          if (rtn < 0)
+          {
+            fprintf(stderr, "\nCls sock : %s\n", strerror(errno));
+            exit(1);
+          }
+          cre_sock();
+          sqchks = 0;
         }
       }
     }

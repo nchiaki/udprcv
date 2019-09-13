@@ -29,6 +29,7 @@
 #define CALC_PACK_INTVL_USEC(r, d) (1000000/((r/8)/(TRNS_HDRS+d)))
 
 #define PCKDAT_MAXZ (MTU_SIZE-(MAC_HDRS+IPV4_HDRS+UDP_HDRS))
+#define UDPRCVBUFSZ (1024*1024)
 
 #define RCVDTARAZ 9000
 typedef struct recv_info {
